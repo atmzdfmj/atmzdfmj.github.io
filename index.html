@@ -4,15 +4,29 @@
 <body>
 <h1>我叫<span id="myname"></span></h1>
   <p>我的学号是<span id="mynumber"></span></p>
+  <a id="btn" href="login.html">去登录</button>
   <img id="logo" src="matrix.png" style="border-radius:10px 20px 40px 80px">
   <img src="Penguins.jpg"/>
   <script src="jquery-3.4.1.js"></script>
   <script>
   $(function(){
-    $.get("./data.json",function(result){
+    var callback=function(result){
       $("#myname").text(result.myname);
       $("#mynumber").text(result.mynumber);
+    }
+    $.ajax({
+        type:"POST",
+        xhrFields:{
+            withCredentials:true
+        },
+        url:"http://10.30.201.83:8585/userinfo",
+        // data:"name=John", 
+        contentType:"application/json",
+        // data:{"name":"John"},
+        success:callback
     });
+    // $.post("http://10.30.201.83:8585/data.json", { name: "John"},callback);
+
   })
   </script>
 </body>
