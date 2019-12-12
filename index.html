@@ -4,30 +4,66 @@
 <body>
 <h1>我叫<span id="myname"></span></h1>
   <p>我的学号是<span id="mynumber"></span></p>
-  <a id="btn" href="login.html">去登录</a>
+  <a id="alogin" href="login.html">去登录</a>
+  <a id="alogout" href="#">去注销</a>
+  <input id="content" type="text">
+  <button id="btnAdd">添加</button>
+  <ul id="list">
+  </ul>
     <br>
   <img id="logo" src="1a899b4cd1dea31d8d763771b84e72d7bea85b05.jpg" style="border-radius:10px 20px 40px 80px">
-  <img src="9a4e5d2e5f34f685624b842040f7e4b898acfeb1.jpg" style="width: 80%;height: 100%;"/>
+  <img src="9a4e5d2e5f34f685624b842040f7e4b898acfeb1.jpg" style="width:1280px;height: 1000px;"/>
   <script src="jquery-3.4.1.js"></script>
   <script>
   $(function(){
     var callback=function(result){
-      $("#myname").text(result.myname);
-      $("#mynumber").text(result.mynumber);
+      if(!result || !result.myname){
+        $("#alogout").hide();
+        $("#content").hide();
+        $("#btnAdd").hide();
+      }else{
+        $("#myname").text(result.myname);
+        $("#mynumber").text(result.mynumber);
+        $("#alogin").hide();
+      }
+     
     }
+    $.get("http://127.0.0.1:8585/lvlist",
+          function(result){
+            for(var i=0;i<result.length;i++){
+              $("#list").append("<li>"+result[i]+"</li>");
+            }          
+          }
+    )
     $.ajax({
         type:"POST",
         xhrFields:{
             withCredentials:true
         },
         url:"http://127.0.0.1:8585/userinfo",
-        // data:"name=John", 
         contentType:"application/json",
-        // data:{"name":"John"},
         success:callback
     });
-    // $.post("http://10.30.201.83:8585/data.json", { name: "John"},callback);
-
+    $("#alogout").click(function(){
+      $.ajax({
+        type:"POST",
+        xhrFields:{
+            withCredentials:true
+        },
+        url:"http://127.0.0.1:8585/logout",
+        success:function(){
+          location.href="index.html"
+        }
+      });
+    })
+    $("#btnAdd").click(function(){
+      $.post("http://127.0.0.1:8585/addlvli",
+        {lvli:$("#content").val()},
+        function(){
+          location.href="index.html"
+        }
+      )
+    })
   })
   </script>
 </body>
